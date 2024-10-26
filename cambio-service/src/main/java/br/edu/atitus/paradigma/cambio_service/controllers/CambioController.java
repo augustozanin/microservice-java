@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,8 @@ public class CambioController {
 	@GetMapping("/{valor}/{origem}/{destino}")
 	@CircuitBreaker(name = "cotacaoClient", fallbackMethod = "getCambioFromLocal")
 	public ResponseEntity<CambioEntity> getCambio(@PathVariable double valor, @PathVariable String origem,
-			@PathVariable String destino) throws Exception {
+			@PathVariable String destino,
+			@RequestHeader(required = false, name = "Usuario") String usuario) throws Exception {
 
 		CambioEntity cambio = cacheManager.getCache("cambioCache").get(origem + destino, CambioEntity.class);
 		if (cambio == null) {
@@ -45,7 +47,7 @@ public class CambioController {
 			cacheManager.getCache("cambioCache").put(origem + destino, cambio);
 		}
 		cambio.setValorConvertido(valor * cambio.getFator());
-		cambio.setAmbiente("Cambio-Service run in port: " + porta);
+		cambio.setAmbiente("Cambio-Service run in port: " + porta + " - usuario: " + usuario);
 		return ResponseEntity.ok(cambio);
 
 	}
