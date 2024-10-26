@@ -3,7 +3,25 @@ spring:
     name: saudacao-service
   profiles:
     active:
-    - pt
+    - es
+  config:
+    import:
+    - optional:configserver:http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - '*'
+  endpoint:
+    health:
+      show-details: always
 saudacao-service:
   saudacao: Hello
   nome-padrao: World
+eureka:
+  client:
+    service-url:
+     default-Zone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("saudacao-service")
 public class SaudacaoConfig {
+
 	private String saudacao;
 	private String nomePadrao;
 	
